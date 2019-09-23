@@ -48,8 +48,8 @@ export default {
         if(!isValid) return
         this.submitForm(`/api/titleSearch?_csrf=${Cookie.get('csrfToken')}`, {
           code: this.form.code,
-          from: this.form.range[0],
-          to: this.form.range[1],
+          from: dayjs(this.form.range[0]).format('YYYYMMDD'),
+          to: dayjs(this.form.range[1]).format('YYYYMMDD'),
         })
         this.loading = true
         setTimeout(() => {
