@@ -34,6 +34,20 @@ class HomeController extends Controller {
     const wb = new XLSX.utils.book_new()
     const wsData = [[company.name], ...new Array(3), ['', '发放时间', '类型', '文件', '链接'], ...articleList]
     const ws = XLSX.utils.aoa_to_sheet(wsData)
+
+    for(let i = 0; i < articleList.length; i++){
+      ws[`E${6+i}`].l = { Target: articleList[i][4] }
+    }
+
+    // console.log(ws['!cols'])
+    ws['!cols'] = [
+      { wpx: 70 },
+      { wpx: 110 },
+      { wpx: 250 },
+      { wpx: 350 },
+      { wpx: 500 },
+    ]
+
     XLSX.utils.book_append_sheet(wb, ws, '报表')
     const filename = `report-${dayjs().format('YYYYMMDDHHmmss')}.xlsx`
     XLSX.writeFile(wb, filename)
@@ -95,7 +109,7 @@ class HomeController extends Controller {
         // stockShortName: $tr.find('.stock-short-name').text().replace('股份簡稱: ', '').trim(),
         $tr.find('.headline').text().trim(),
         $tr.find('.doc-link a').text().trim(),
-        'https://www1.hkexnews.hk' + $tr.find('.doc-link a').attr('href').trim(),
+        'https://www1.hkexnews.hk' + $tr.find('.doc-link a').attr('href').trim()
       ])
     })
     return list
