@@ -4,7 +4,7 @@ const Controller = require('egg').Controller
 const fs = require('fs')
 const dayjs = require('dayjs')
 
-const { SOURCES } = require('../libs')
+const { SOURCES, LANGS } = require('../libs')
 
 // source: hkex, szse, sse
 
@@ -12,7 +12,8 @@ class HomeController extends Controller {
 
   async basicData(){
     this.ctx.body = {
-      SOURCES
+      SOURCES,
+      LANGS,
     }
   }
 
@@ -26,7 +27,7 @@ class HomeController extends Controller {
 
   async downloadArticleList(){
     const { ctx, service } = this
-    let { source, code, from, to = dayjs() } = ctx.request.body
+    let { source, code, from, to = dayjs(), lang='zh' } = ctx.request.body
 
 
     if(!code.trim()) throw new Error('no query "code"')
@@ -37,7 +38,7 @@ class HomeController extends Controller {
       from = dayjs(from)
     }
 
-    const [company, list] = await service.announce.getArticleList(source, code, from, to)
+    const [company, list] = await service.announce.getArticleList(source, code, from, to, lang)
 
     const filename = await service.announce.generateXLSXFile(company, from, to, list)
 

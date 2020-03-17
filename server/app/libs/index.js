@@ -11,8 +11,14 @@ const SOURCES = [
   { value: SOURCE_MAP.SSE, text: '上海' }
 ]
 
+const LANGS = [
+  { value: 'zh', text: '中文' },
+  { value: 'en', text: '英语' },
+]
+
 
 module.exports = {
   SOURCE_MAP,
-  SOURCES
+  SOURCES,
+  LANGS,
 }

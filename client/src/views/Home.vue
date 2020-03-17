@@ -7,6 +7,13 @@
         </el-radio>
       </el-radio-group>
     </el-form-item>
+    <el-form-item label="语言" prop="lang">
+      <el-radio-group v-model="form.lang">
+        <el-radio v-for="lang of langs" :key="lang.value" :label="lang.value">
+          {{ lang.text }}
+        </el-radio>
+      </el-radio-group>
+    </el-form-item>
     <el-form-item label="代码" prop="code" placeholder="代码">
       <el-autocomplete
         v-model.trim="form.code"
@@ -46,9 +53,11 @@ export default {
     return {
       valid: true,
       sources: [],
+      langs: [],
       form: {
         source: '',
         code: '',
+        lang: '',
         range: [from, to]
       },
       rules: {
@@ -108,6 +117,7 @@ export default {
         this.submitForm(`/api/downloadArticleList?_csrf=${Cookie.get('csrfToken')}`, {
           source: this.form.source,
           code: this.form.code,
+          lang: this.form.lang,
           from: dayjs(this.form.range[0]).format('YYYYMMDD'),
           to: dayjs(this.form.range[1]).format('YYYYMMDD'),
         })
@@ -137,6 +147,8 @@ export default {
   created(){
     this.$axios.get('/api/basicData').then(res => {
       this.sources = res.data.SOURCES
+      this.langs = res.data.LANGS
+      this.form.lang = this.langs[0].value
       this.form.source = this.sources[0].value
     })
   }

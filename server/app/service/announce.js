@@ -53,15 +53,15 @@ class AnnounceService extends Service {
     }
   }
 
-  async getArticleList(source, code, from, to) {
+  async getArticleList(source, code, from, to, lang='zh') {
     const { ctx } = this
     const [company] = await this.getCompaniesFromCode(source, code)
     if(!company) throw new Error('no matched company')
     if(source === SOURCE_MAP.HKEX) {
-      const res = await ctx.curl(`https://www1.hkexnews.hk/search/titlesearch.xhtml?lang=zh`, {
+      const res = await ctx.curl(`https://www1.hkexnews.hk/search/titlesearch.xhtml?lang=${lang}`, {
         method: 'POST',
         data: {
-          lang: 'ZH',
+          lang: lang.toUpperCase(),
           category: 0,
           market: 'SEHK',
           searchType: 0,
@@ -86,7 +86,7 @@ class AnnounceService extends Service {
       $trs.each((i, tr) => {
         const $tr = $(tr)
         list.push({
-          time: $tr.find('.release-time').text().replace('發放時間: ', '').trim(),
+          time: $tr.find('.release-time').text().replace(lang === 'zh' ? '發放時間: ' : 'Release Time: ', '').trim(),
           category: $tr.find('.headline').text().trim(),
           title: $tr.find('.doc-link a').text().trim(),
           link: 'https://www1.hkexnews.hk' + $tr.find('.doc-link a').attr('href').trim(),
